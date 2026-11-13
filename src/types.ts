@@ -1,4 +1,4 @@
-export type SubjectId = 'khtn_bio' | 'khtn_physics' | 'khtn_chem' | 'math' | 'geography';
+export type SubjectId = 'khtn_bio' | 'khtn_physics' | 'khtn_chem' | 'math';
 
 export interface SubjectInfo {
   id: SubjectId;
@@ -29,9 +29,18 @@ export interface ChemicalElement {
   protons: number;
   neutrons: number;
   electrons: number;
-  shells: number[]; // e.g. [2, 4] for Carbon
+  shells: number[];
   stateAtRoomTemp: 'Khí' | 'Rắn' | 'Lỏng';
   description: string;
+}
+
+export interface MoleculeInfo {
+  id: string;
+  formula: string;
+  name: string;
+  description: string;
+  atoms: { symbol: string; x: number; y: number; z: number; color: string; radius: number }[];
+  bonds: { from: number; to: number; type: 'single' | 'double' }[];
 }
 
 export interface QuizQuestion {

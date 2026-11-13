@@ -7,7 +7,6 @@ import { createCellScene, CellSceneController } from './scenes/CellScene';
 import { createPhysicsSpringScene, SpringSceneController } from './scenes/PhysicsSpringScene';
 import { createAtomMatterScene, AtomMatterController } from './scenes/AtomMatterScene';
 import { createMathGeometryScene, MathGeometryController } from './scenes/MathGeometryScene';
-import { createEarthOrbitScene, EarthSceneController } from './scenes/EarthOrbitScene';
 
 export interface SceneControlsRef {
   // Cell
@@ -15,22 +14,24 @@ export interface SceneControlsRef {
   setCellType: (type: 'plant' | 'animal') => void;
   setSelectedOrganelle: (id: string | null) => void;
   // Physics
+  setPhysicsMode: (m: 'spring' | 'lever') => void;
   setSpringMass: (g: number) => void;
   setSpringConstant: (k: number) => void;
   setSpringGravity: (g: number) => void;
   triggerSpringPerturb: () => void;
   getSpringExtensionCm: () => number;
-  // Atom & Matter
-  setChemMode: (m: 'atom' | 'matter') => void;
+  setLeverLeft: (mG: number, dCm: number) => void;
+  setLeverRight: (mG: number, dCm: number) => void;
+  // Atom, Molecules & Matter
+  setChemMode: (m: 'atom' | 'molecule' | 'matter') => void;
   setChemElement: (symbol: string) => void;
+  setChemMolecule: (id: string) => void;
   setChemTemperature: (t: number) => void;
   // Math
   setBoxDimensions: (a: number, b: number, h: number) => void;
   setBoxUnfold: (u: number) => void;
-  setBoxShape: (type: 'box' | 'cube') => void;
-  // Earth
-  setEarthSeason: (s: 'summer' | 'winter' | 'equinox') => void;
-  setEarthRotateSpeed: (sp: number) => void;
+  setBoxShape: (type: 'box' | 'cube' | 'tri_prism') => void;
+  toggleBoxVoxels: (show: boolean) => void;
   // Common
   resetCamera: () => void;
   toggleAutoRotate: () => boolean;
@@ -55,7 +56,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     spring?: SpringSceneController;
     chem?: AtomMatterController;
     math?: MathGeometryController;
-    earth?: EarthSceneController;
   }>({});
 
   const cameraControlsRef = useRef<{
@@ -90,14 +90,18 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = !isSoftwareGl;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.setSize(container.clientWidth, container.clientHeight);
+
+    // Container dimensions safety check
+    const containerW = Math.max(container.clientWidth || window.innerWidth, 320);
+    const containerH = Math.max(container.clientHeight || window.innerHeight, 240);
+    renderer.setSize(containerW, containerH);
 
     container.appendChild(renderer.domElement);
 
     // Scene & Environment
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b1120); // Deep rich slate void
-    scene.fog = new THREE.FogExp2(0x0b1120, 0.025);
+    scene.background = new THREE.Color(0x070b14); // Ultra-deep slate midnight
+    scene.fog = new THREE.FogExp2(0x070b14, 0.022);
 
     // Studio Environment Reflections
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
@@ -105,8 +109,8 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     pmremGenerator.dispose();
 
     // Studio Lighting Rig
-    const warmKeyLight = new THREE.DirectionalLight(0xffedd5, 2.2);
-    warmKeyLight.position.set(5, 8, 5);
+    const warmKeyLight = new THREE.DirectionalLight(0xfff7ed, 2.4);
+    warmKeyLight.position.set(6, 9, 6);
     warmKeyLight.castShadow = !isSoftwareGl;
     if (warmKeyLight.castShadow) {
       warmKeyLight.shadow.mapSize.width = 1024;
@@ -116,17 +120,60 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     }
     scene.add(warmKeyLight);
 
-    const coolFillLight = new THREE.HemisphereLight(0x38bdf8, 0x1e293b, 1.2);
+    const coolFillLight = new THREE.HemisphereLight(0x38bdf8, 0x0f172a, 1.25);
     scene.add(coolFillLight);
 
-    const rimLight = new THREE.DirectionalLight(0xa78bfa, 0.8);
-    rimLight.position.set(-6, 4, -5);
+    const rimLight = new THREE.DirectionalLight(0x818cf8, 1.0);
+    rimLight.position.set(-7, 5, -6);
     scene.add(rimLight);
+
+    // Science Laboratory Floor & Pedestal Rig
+    const labBaseGroup = new THREE.Group();
+    scene.add(labBaseGroup);
+
+    // Pedestal stage disc
+    const stageGeo = new THREE.CylinderGeometry(3.6, 3.8, 0.12, 48);
+    const stageMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      metalness: 0.8,
+      roughness: 0.3,
+    });
+    const stage = new THREE.Mesh(stageGeo, stageMat);
+    stage.position.set(0, -0.06, 0);
+    stage.receiveShadow = !isSoftwareGl;
+    labBaseGroup.add(stage);
+
+    // Subtle glowing cyan accent ring on stage rim
+    const ringGeo = new THREE.TorusGeometry(3.62, 0.025, 8, 64);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6 });
+    const accentRing = new THREE.Mesh(ringGeo, ringMat);
+    accentRing.rotation.x = Math.PI / 2;
+    accentRing.position.y = -0.01;
+    labBaseGroup.add(accentRing);
+
+    // Subtle floating dust/star ambient particles in the background
+    const particleCount = 70;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 16;
+      particlePositions[i * 3 + 1] = Math.random() * 8 + 0.5;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 16;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x93c5fd,
+      size: 0.04,
+      transparent: true,
+      opacity: 0.4,
+    });
+    const ambientDust = new THREE.Points(particleGeo, particleMat);
+    scene.add(ambientDust);
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
       45,
-      container.clientWidth / container.clientHeight,
+      containerW / containerH,
       0.1,
       100
     );
@@ -135,9 +182,9 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = !isSoftwareGl;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2 + 0.1;
+    controls.maxPolarAngle = Math.PI / 2 + 0.05;
     controls.minDistance = 2.0;
-    controls.maxDistance = 25.0;
+    controls.maxDistance = 20.0;
     controls.target.set(0, 1.5, 0);
     controls.update();
 
@@ -147,12 +194,11 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     const subjectRoot = new THREE.Group();
     scene.add(subjectRoot);
 
-    // Load Scene by Subject
+    // Load Scene by Subject (4 Core Subjects)
     let cellCtrl: CellSceneController | undefined;
     let springCtrl: SpringSceneController | undefined;
     let chemCtrl: AtomMatterController | undefined;
     let mathCtrl: MathGeometryController | undefined;
-    let earthCtrl: EarthSceneController | undefined;
 
     if (currentSubject === 'khtn_bio') {
       cellCtrl = createCellScene((id) => onSelectOrganelle?.(id));
@@ -174,11 +220,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       subjectRoot.add(mathCtrl.group);
       camera.position.set(0, 3.5, 6.5);
       controls.target.set(0, 0.8, 0);
-    } else if (currentSubject === 'geography') {
-      earthCtrl = createEarthOrbitScene();
-      subjectRoot.add(earthCtrl.group);
-      camera.position.set(0, 2.8, 7.2);
-      controls.target.set(0, 1.8, 0);
     }
     controls.update();
 
@@ -187,7 +228,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       spring: springCtrl,
       chem: chemCtrl,
       math: mathCtrl,
-      earth: earthCtrl,
     };
 
     // Raycaster for interactive object selection (e.g. click organelles)
@@ -222,19 +262,22 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       setCellExploded: (f) => cellCtrl?.setExploded(f),
       setCellType: (t) => cellCtrl?.setCellType(t),
       setSelectedOrganelle: (id) => cellCtrl?.setSelectedOrganelle(id),
+      setPhysicsMode: (m) => springCtrl?.setMode(m),
       setSpringMass: (g) => springCtrl?.setMass(g),
       setSpringConstant: (k) => springCtrl?.setSpringConstant(k),
       setSpringGravity: (g) => springCtrl?.setGravity(g),
       triggerSpringPerturb: () => springCtrl?.triggerPerturbation(),
       getSpringExtensionCm: () => springCtrl?.getCurrentExtensionCm() || 0,
+      setLeverLeft: (mG, dCm) => springCtrl?.setLeverLeft(mG, dCm),
+      setLeverRight: (mG, dCm) => springCtrl?.setLeverRight(mG, dCm),
       setChemMode: (m) => chemCtrl?.setMode(m),
       setChemElement: (s) => chemCtrl?.setElement(s),
+      setChemMolecule: (id) => chemCtrl?.setMolecule(id),
       setChemTemperature: (t) => chemCtrl?.setTemperature(t),
       setBoxDimensions: (a, b, h) => mathCtrl?.setDimensions(a, b, h),
       setBoxUnfold: (u) => mathCtrl?.setUnfoldProgress(u),
       setBoxShape: (type) => mathCtrl?.setShapeType(type),
-      setEarthSeason: (s) => earthCtrl?.setSeason(s),
-      setEarthRotateSpeed: (sp) => earthCtrl?.setRotateSpeed(sp),
+      toggleBoxVoxels: (show) => mathCtrl?.toggleVoxels(show),
       resetCamera: () => {
         if (currentSubject === 'khtn_bio') {
           camera.position.set(0, 2.8, 6.5);
@@ -248,9 +291,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
         } else if (currentSubject === 'math') {
           camera.position.set(0, 3.5, 6.5);
           controls.target.set(0, 0.8, 0);
-        } else {
-          camera.position.set(0, 2.8, 7.2);
-          controls.target.set(0, 1.8, 0);
         }
         controls.update();
       },
@@ -261,16 +301,18 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       },
     };
 
-    // Resize Handler
+    // Resize Observer for reliable dimensions
     const handleResize = () => {
       if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
+      const w = Math.max(container.clientWidth || window.innerWidth, 320);
+      const h = Math.max(container.clientHeight || window.innerHeight, 240);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
     window.addEventListener('resize', handleResize);
+    const ro = new ResizeObserver(() => handleResize());
+    ro.observe(container);
 
     // Animation Loop
     let animId = 0;
@@ -278,7 +320,15 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
 
     function afterDraw(cb: () => void) {
       const gl = renderer.getContext() as WebGL2RenderingContext;
+      if (!gl || typeof gl.fenceSync !== 'function') {
+        animId = window.setTimeout(cb, 80);
+        return;
+      }
       const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+      if (!sync) {
+        animId = window.setTimeout(cb, 80);
+        return;
+      }
       gl.flush();
       const poll = () => {
         const state = sync && gl.getSyncParameter(sync, gl.SYNC_STATUS);
@@ -301,7 +351,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       springCtrl?.update(delta);
       chemCtrl?.update(delta);
       mathCtrl?.update(delta);
-      earthCtrl?.update(delta);
 
       renderer.render(scene, camera);
 
@@ -315,6 +364,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
 
     // Clean up
     return () => {
+      ro.disconnect();
       window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
       if (isSoftwareGl) clearTimeout(animId);
@@ -324,7 +374,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       springCtrl?.dispose();
       chemCtrl?.dispose();
       mathCtrl?.dispose();
-      earthCtrl?.dispose();
 
       controls.dispose();
       renderer.dispose();

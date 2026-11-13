@@ -1,12 +1,12 @@
-import { SubjectInfo, OrganelleInfo, ChemicalElement, QuizQuestion, FormulaData, SubjectId } from '../types';
+import { SubjectInfo, OrganelleInfo, ChemicalElement, MoleculeInfo, QuizQuestion, FormulaData, SubjectId } from '../types';
 
 export const SUBJECTS: SubjectInfo[] = [
   {
     id: 'khtn_bio',
     name: 'Sinh Học 6',
     badge: 'KHTN - Sinh Học',
-    subTitle: 'Bài 17-20: Tế bào - Đơn vị cơ sở của sự sống',
-    topicTitle: 'Mô hình Cấu tạo Tế bào Thực vật & Động vật',
+    subTitle: 'Bài 17-21: Tế bào - Đơn vị cơ sở của sự sống & Kính hiển vi quang học',
+    topicTitle: 'Mô hình Tế bào 3D Đa Bào quan & Kính Hiển Vi Ảo',
     iconName: 'Dna',
     color: '#10b981',
     gradient: 'from-emerald-500 to-teal-700',
@@ -15,8 +15,8 @@ export const SUBJECTS: SubjectInfo[] = [
     id: 'khtn_physics',
     name: 'Vật Lý 6',
     badge: 'KHTN - Vật Lý',
-    subTitle: 'Bài 40-44: Lực, Trọng lực & Độ dãn của lò xo',
-    topicTitle: 'Thí nghiệm Đo Lực Kế & Định luật Hooke',
+    subTitle: 'Bài 40-45: Lực đàn hồi, Trọng lượng, Đòn bẩy & Khối lượng riêng',
+    topicTitle: 'Thí nghiệm Đo Lực Kế, Độ Dãn Lò Xo & Cân Bằng Đòn Bẩy',
     iconName: 'Weight',
     color: '#3b82f6',
     gradient: 'from-blue-500 to-indigo-700',
@@ -25,8 +25,8 @@ export const SUBJECTS: SubjectInfo[] = [
     id: 'khtn_chem',
     name: 'Hóa Học 6',
     badge: 'KHTN - Hóa Học',
-    subTitle: 'Bài 2-10: Cấu tạo nguyên tử & Các thể của chất',
-    topicTitle: 'Mô hình Nguyên tử Bohr & Động học Thể chất',
+    subTitle: 'Bài 2-12: Cấu tạo nguyên tử, Phân tử hợp chất & Các thể của chất',
+    topicTitle: 'Mô hình Nguyên tử Bohr, Phân tử Hóa học 3D & Chuyển thể',
     iconName: 'Atom',
     color: '#8b5cf6',
     gradient: 'from-purple-500 to-violet-700',
@@ -35,21 +35,11 @@ export const SUBJECTS: SubjectInfo[] = [
     id: 'math',
     name: 'Toán Học 6',
     badge: 'Toán Học Trực Quan',
-    subTitle: 'Hình học trực quan: Hình hộp chữ nhật & Hình lập phương',
-    topicTitle: 'Mô hình Khối hộp 3D & Trải hình (Unfolding Net)',
+    subTitle: 'Hình học trực quan: Hình hộp chữ nhật, Hình lập phương & Lăng trụ đứng',
+    topicTitle: 'Khối Không Gian 3D, Trải Hình (Net) & Đếm Thể Tích Đơn Vị',
     iconName: 'Box',
     color: '#f59e0b',
     gradient: 'from-amber-500 to-orange-700',
-  },
-  {
-    id: 'geography',
-    name: 'Địa Lý 6',
-    badge: 'Lịch Sử & Địa Lý 6',
-    subTitle: 'Bài 1-7: Trái Đất trong Hệ Mặt Trời & Kinh Vĩ Tuyến',
-    topicTitle: 'Mô hình Trái Đất, Lưới Kinh Vĩ Tuyến & 4 Mùa',
-    iconName: 'Globe',
-    color: '#06b6d4',
-    gradient: 'from-cyan-500 to-blue-700',
   },
 ];
 
@@ -58,18 +48,18 @@ export const ORGANELLES: OrganelleInfo[] = [
     id: 'nucleus',
     name: 'Nhân tế bào (Nucleus)',
     scientificName: 'Nucleus',
-    role: 'Trung tâm điều khiển mọi hoạt động sống của tế bào, chứa vật chất di truyền (ADN / Nhiễm sắc thể).',
+    role: 'Trung tâm chỉ huy và điều khiển mọi hoạt động sống của tế bào, chứa vật chất di truyền (ADN / Nhiễm sắc thể).',
     foundIn: 'both',
-    formulaOrFact: 'Kích thước khoảng 5 - 10 µm. Có màng nhân kép bao bọc và nhân con bên trong.',
+    formulaOrFact: 'Kích thước khoảng 5 - 10 µm. Có màng nhân kép bao bọc và nhân con bên trong chứa ribosome.',
     color: '#ec4899',
   },
   {
     id: 'cell_wall',
     name: 'Thành tế bào (Cell Wall)',
     scientificName: 'Murus cellularis',
-    role: 'Bảo vệ tế bào, tạo bộ khung vững chắc giúp thực vật giữ nguyên hình dạng cố định.',
+    role: 'Bảo vệ tế bào, tạo bộ khung vững chắc giúp thực vật đứng thẳng và giữ nguyên hình dạng cố định.',
     foundIn: 'plant',
-    formulaOrFact: 'Được cấu tạo chủ yếu từ sợi xenlulôzơ (cellulose). Chỉ có ở tế bào thực vật, nấm!',
+    formulaOrFact: 'Được cấu tạo chủ yếu từ sợi xenlulôzơ (cellulose). Chỉ có ở thực vật, nấm, không có ở động vật!',
     color: '#10b981',
   },
   {
@@ -87,16 +77,16 @@ export const ORGANELLES: OrganelleInfo[] = [
     scientificName: 'Chloroplastus',
     role: 'Thực hiện quá trình quang hợp: hấp thụ năng lượng ánh sáng mặt trời để tổng hợp chất hữu cơ (đường) nuôi cây.',
     foundIn: 'plant',
-    formulaOrFact: 'Chứa chất diệp lục (chlorophyll). Phương trình: CO₂ + H₂O + Ánh sáng → C₆H₁₂O₆ + O₂.',
+    formulaOrFact: 'Chứa chất diệp lục (chlorophyll). Phương trình: 6CO₂ + 6H₂O + Ánh sáng → C₆H₁₂O₆ + 6O₂.',
     color: '#22c55e',
   },
   {
     id: 'mitochondria',
     name: 'Ti thể (Mitochondria)',
     scientificName: 'Mitochondrion',
-    role: '"Nhà máy năng lượng" của tế bào, thực hiện hô hấp tế bào để phân giải đường và tạo ra năng lượng ATP.',
+    role: '"Nhà máy năng lượng" của tế bào, thực hiện hô hấp tế bào để phân giải đường và tạo ra năng lượng ATP cung cấp cho sự sống.',
     foundIn: 'both',
-    formulaOrFact: 'Phương trình hô hấp: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Năng lượng (ATP).',
+    formulaOrFact: 'Phương trình hô hấp: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Năng lượng (ATP). Có màng kép và mào cristae gấp nếp.',
     color: '#f97316',
   },
   {
@@ -105,8 +95,26 @@ export const ORGANELLES: OrganelleInfo[] = [
     scientificName: 'Vacuola',
     role: 'Dự trữ nước, khoáng chất, chất dinh dưỡng, sắc tố hoa quả và điều hòa áp suất thẩm thấu cho tế bào thực vật.',
     foundIn: 'plant',
-    formulaOrFact: 'Ở thực vật trưởng thành, không bào trung tâm có thể chiếm tới 90% thể tích tế bào!',
+    formulaOrFact: 'Ở tế bào thực vật trưởng thành, không bào trung tâm có thể chiếm tới 90% thể tích tế bào!',
     color: '#06b6d4',
+  },
+  {
+    id: 'golgi',
+    name: 'Bộ máy Golgi (Golgi Apparatus)',
+    scientificName: 'Complexus golgiensis',
+    role: 'Đóng gói, chế biến, hoàn thiện và phân phối các sản phẩm protein, lipid tới các bào quan khác hoặc xuất khẩu ra ngoài.',
+    foundIn: 'both',
+    formulaOrFact: 'Gồm hệ thống các túi dẹt xếp chồng lên nhau hình đĩa cong kèm theo các túi cầu vận chuyển (vesicles).',
+    color: '#eab308',
+  },
+  {
+    id: 'er',
+    name: 'Lưới nội chất & Ribosome (Endoplasmic Reticulum)',
+    scientificName: 'Reticulum endoplasmicum',
+    role: 'Mạng lưới đường ống màng tổng hợp protein (lưới có hạt đính ribosome) và tổng hợp lipid (lưới trơn).',
+    foundIn: 'both',
+    formulaOrFact: 'Ribosome là nơi lắp ráp chuỗi axit amin thành protein nuôi cơ thể.',
+    color: '#a855f7',
   },
   {
     id: 'cytoplasm',
@@ -115,7 +123,7 @@ export const ORGANELLES: OrganelleInfo[] = [
     role: 'Khối dịch keo chứa dịch bào và các bào quan, là nơi diễn ra hầu hết các phản ứng hóa sinh của tế bào.',
     foundIn: 'both',
     formulaOrFact: 'Gồm 80-90% là nước cùng protein, muối khoáng hòa tan.',
-    color: '#a78bfa',
+    color: '#c084fc',
   },
 ];
 
@@ -191,6 +199,116 @@ export const CHEMICAL_ELEMENTS: ChemicalElement[] = [
     shells: [2, 8, 1],
     stateAtRoomTemp: 'Rắn',
     description: 'Kim loại kiềm mềm màu trắng bạc, phản ứng dữ dội với nước. Kết hợp với Clo tạo muối ăn NaCl.',
+  },
+  {
+    symbol: 'Mg',
+    name: 'Magnesium (Magiê)',
+    atomicNumber: 12,
+    massNumber: 24,
+    protons: 12,
+    neutrons: 12,
+    electrons: 12,
+    shells: [2, 8, 2],
+    stateAtRoomTemp: 'Rắn',
+    description: 'Kim loại nhẹ màu bạc, cháy với ngọn lửa trắng chói lòa trong pháo hoa, là nhân tố trung tâm của phân tử diệp lục.',
+  },
+  {
+    symbol: 'Al',
+    name: 'Aluminium (Nhôm)',
+    atomicNumber: 13,
+    massNumber: 27,
+    protons: 13,
+    neutrons: 14,
+    electrons: 13,
+    shells: [2, 8, 3],
+    stateAtRoomTemp: 'Rắn',
+    description: 'Kim loại phổ biến nhất trong vỏ Trái Đất, nhẹ, dẫn điện và dẫn nhiệt tốt, dùng làm khung cửa, máy bay, nồi chảo.',
+  },
+  {
+    symbol: 'Cl',
+    name: 'Chlorine (Clo)',
+    atomicNumber: 17,
+    massNumber: 35,
+    protons: 17,
+    neutrons: 18,
+    electrons: 17,
+    shells: [2, 8, 7],
+    stateAtRoomTemp: 'Khí',
+    description: 'Khí màu vàng lục có mùi hắc đặc trưng, dùng để khử trùng nước sinh hoạt bể bơi và tạo muối ăn.',
+  },
+];
+
+export const MOLECULES: MoleculeInfo[] = [
+  {
+    id: 'water',
+    formula: 'H₂O',
+    name: 'Phân tử Nước (Water)',
+    description: 'Hợp chất nuôi dưỡng mọi sự sống, gồm 1 nguyên tử Oxy liên kết với 2 nguyên tử Hiđrô góc 104.5°.',
+    atoms: [
+      { symbol: 'O', x: 0, y: 0.2, z: 0, color: '#ef4444', radius: 0.4 },
+      { symbol: 'H', x: -0.65, y: -0.4, z: 0, color: '#f8fafc', radius: 0.25 },
+      { symbol: 'H', x: 0.65, y: -0.4, z: 0, color: '#f8fafc', radius: 0.25 },
+    ],
+    bonds: [
+      { from: 0, to: 1, type: 'single' },
+      { from: 0, to: 2, type: 'single' },
+    ],
+  },
+  {
+    id: 'co2',
+    formula: 'CO₂',
+    name: 'Khí Carbon dioxide (Cacbonic)',
+    description: 'Phân tử thẳng hàng gồm 1 nguyên tử Cacbon ở giữa liên kết đôi với 2 nguyên tử Oxy hai bên.',
+    atoms: [
+      { symbol: 'C', x: 0, y: 0, z: 0, color: '#334155', radius: 0.35 },
+      { symbol: 'O', x: -0.9, y: 0, z: 0, color: '#ef4444', radius: 0.38 },
+      { symbol: 'O', x: 0.9, y: 0, z: 0, color: '#ef4444', radius: 0.38 },
+    ],
+    bonds: [
+      { from: 0, to: 1, type: 'double' },
+      { from: 0, to: 2, type: 'double' },
+    ],
+  },
+  {
+    id: 'o2',
+    formula: 'O₂',
+    name: 'Khí Oxygen (Oxy phân tử)',
+    description: 'Đơn chất khí cần thiết cho hô hấp và sự cháy, gồm 2 nguyên tử Oxy liên kết đôi bền vững.',
+    atoms: [
+      { symbol: 'O', x: -0.45, y: 0, z: 0, color: '#ef4444', radius: 0.38 },
+      { symbol: 'O', x: 0.45, y: 0, z: 0, color: '#ef4444', radius: 0.38 },
+    ],
+    bonds: [{ from: 0, to: 1, type: 'double' }],
+  },
+  {
+    id: 'ch4',
+    formula: 'CH₄',
+    name: 'Khí Methane (Khí sinh học Biogas)',
+    description: 'Khí đốt thiên nhiên, 1 nguyên tử Cacbon ở tâm tứ diện đều liên kết với 4 nguyên tử Hiđrô xung quanh.',
+    atoms: [
+      { symbol: 'C', x: 0, y: 0, z: 0, color: '#334155', radius: 0.38 },
+      { symbol: 'H', x: 0, y: 0.75, z: 0, color: '#f8fafc', radius: 0.22 },
+      { symbol: 'H', x: 0.7, y: -0.25, z: 0, color: '#f8fafc', radius: 0.22 },
+      { symbol: 'H', x: -0.35, y: -0.25, z: 0.6, color: '#f8fafc', radius: 0.22 },
+      { symbol: 'H', x: -0.35, y: -0.25, z: -0.6, color: '#f8fafc', radius: 0.22 },
+    ],
+    bonds: [
+      { from: 0, to: 1, type: 'single' },
+      { from: 0, to: 2, type: 'single' },
+      { from: 0, to: 3, type: 'single' },
+      { from: 0, to: 4, type: 'single' },
+    ],
+  },
+  {
+    id: 'nacl',
+    formula: 'NaCl',
+    name: 'Muối ăn (Natri Clorua)',
+    description: 'Hợp chất ion gồm cation Na⁺ mang điện dương và anion Cl⁻ mang điện âm hút nhau mạnh mẽ.',
+    atoms: [
+      { symbol: 'Na⁺', x: -0.6, y: 0, z: 0, color: '#a855f7', radius: 0.32 },
+      { symbol: 'Cl⁻', x: 0.6, y: 0, z: 0, color: '#22c55e', radius: 0.45 },
+    ],
+    bonds: [{ from: 0, to: 1, type: 'single' }],
   },
 ];
 
@@ -268,6 +386,56 @@ export const FORMULAS: Record<SubjectId, FormulaData[]> = {
         };
       },
     },
+    {
+      title: 'Điều kiện cân bằng của Đòn bẩy (Lever Balance)',
+      latex: 'F_1 \\cdot d_1 = F_2 \\cdot d_2',
+      description: 'Khi đòn bẩy cân bằng nằm ngang, tích của lực nhân với cánh tay đòn ở hai phía của điểm tựa phải bằng nhau.',
+      variables: [
+        { symbol: 'F1', name: 'Lực bên trái (F₁)', unit: 'N', defaultVal: 4, min: 1, max: 20, step: 1 },
+        { symbol: 'd1', name: 'Khoảng cách điểm tựa bên trái (d₁)', unit: 'cm', defaultVal: 15, min: 5, max: 50, step: 5 },
+        { symbol: 'd2', name: 'Khoảng cách điểm tựa bên phải (d₂)', unit: 'cm', defaultVal: 30, min: 5, max: 50, step: 5 },
+      ],
+      calculate: (vals) => {
+        const f1 = vals.F1 || 4;
+        const d1 = vals.d1 || 15;
+        const d2 = vals.d2 || 30;
+        const f2 = Math.round(((f1 * d1) / d2) * 100) / 100;
+        return {
+          result: f2,
+          unit: 'N',
+          steps: [
+            `Momen lực bên trái: M₁ = F₁ × d₁ = ${f1} × ${d1} = ${f1 * d1} N·cm`,
+            `Để cân bằng nằm ngang: F₂ × d₂ = F₁ × d₁`,
+            `Lực cần tác dụng bên phải: F₂ = (F₁ × d₁) / d₂ = ${f1 * d1} / ${d2} = ${f2} N`,
+            d2 > d1 ? `Cánh tay đòn dài gấp ${(d2 / d1).toFixed(1)} lần nên lực F₂ nhỏ hơn gấp ${(d2 / d1).toFixed(1)} lần (Được lợi về lực!)` : 'Cánh tay đòn ngắn hơn nên lực cần tác dụng lớn hơn.',
+          ],
+        };
+      },
+    },
+    {
+      title: 'Công thức tính Khối lượng riêng của chất',
+      latex: 'D = \\frac{m}{V}',
+      description: 'Khối lượng riêng của một chất là khối lượng của một đơn vị thể tích chất đó. Thường dùng đơn vị kg/m³ hoặc g/cm³.',
+      variables: [
+        { symbol: 'm', name: 'Khối lượng (m)', unit: 'g', defaultVal: 78, min: 10, max: 500, step: 1 },
+        { symbol: 'V', name: 'Thể tích (V)', unit: 'cm³', defaultVal: 10, min: 1, max: 100, step: 1 },
+      ],
+      calculate: (vals) => {
+        const m = vals.m || 78;
+        const V = vals.V || 10;
+        const D = Math.round((m / V) * 100) / 100;
+        return {
+          result: D,
+          unit: 'g/cm³ (hay ' + D * 1000 + ' kg/m³)',
+          steps: [
+            `Khối lượng: m = ${m} g`,
+            `Thể tích: V = ${V} cm³`,
+            `Khối lượng riêng: D = m / V = ${m} / ${V} = ${D} g/cm³`,
+            `Quy đổi sang hệ SI: D = ${D * 1000} kg/m³`,
+          ],
+        };
+      },
+    },
   ],
   khtn_chem: [
     {
@@ -327,28 +495,36 @@ export const FORMULAS: Record<SubjectId, FormulaData[]> = {
         };
       },
     },
-  ],
-  geography: [
     {
-      title: 'Tính giờ theo Kinh độ & Múi giờ Trái Đất',
-      latex: '1\\text{ vòng} = 360^\\circ = 24\\text{ giờ} \\Rightarrow 1\\text{ giờ} = 15^\\circ\\text{ Kinh độ}',
-      description: 'Trái Đất tự quay từ Tây sang Đông quanh một trục nghiêng 23°27\'. Người ta chia bề mặt Trái Đất làm 24 khu vực giờ (múi giờ), mỗi múi rộng 15 kinh độ. Việt Nam nằm ở múi giờ thứ 7 (GMT+7).',
+      title: 'Hình lăng trụ đứng tam giác: Diện tích xung quanh & Thể tích',
+      latex: 'S_{xq} = C_{đáy} \\cdot h = (a+b+c) \\cdot h, \\quad V = S_{đáy} \\cdot h',
+      description: 'Hình lăng trụ đứng tam giác có 2 đáy là hai tam giác bằng nhau và song song, 3 mặt bên là các hình chữ nhật.',
       variables: [
-        { symbol: 'gmt0', name: 'Giờ tại Đài thiên văn Greenwich (GMT 0)', unit: 'giờ', defaultVal: 8, min: 0, max: 23, step: 1 },
-        { symbol: 'zone', name: 'Múi giờ của địa phương (Việt Nam = +7)', unit: 'GMT', defaultVal: 7, min: -12, max: 12, step: 1 },
+        { symbol: 'a', name: 'Cạnh đáy 1 (a)', unit: 'cm', defaultVal: 3, min: 2, max: 15, step: 1 },
+        { symbol: 'b', name: 'Cạnh đáy 2 (b)', unit: 'cm', defaultVal: 4, min: 2, max: 15, step: 1 },
+        { symbol: 'c', name: 'Cạnh đáy 3 (c)', unit: 'cm', defaultVal: 5, min: 2, max: 15, step: 1 },
+        { symbol: 'h', name: 'Chiều cao lăng trụ (h)', unit: 'cm', defaultVal: 8, min: 2, max: 20, step: 1 },
       ],
       calculate: (vals) => {
-        const g0 = vals.gmt0 ?? 8;
-        const zone = vals.zone ?? 7;
-        const localHour = (g0 + zone + 24) % 24;
+        const a = vals.a || 3;
+        const b = vals.b || 4;
+        const c = vals.c || 5;
+        const h = vals.h || 8;
+        const C_day = a + b + c;
+        const S_xq = C_day * h;
+        // Heron formula for triangle area
+        const p = C_day / 2;
+        const S_day = Math.sqrt(Math.max(0, p * (p - a) * (p - b) * (p - c)));
+        const S_day_round = Math.round(S_day * 10) / 10;
+        const V = Math.round(S_day * h * 10) / 10;
         return {
-          result: localHour,
-          unit: 'giờ',
+          result: V,
+          unit: 'cm³',
           steps: [
-            `Giờ gốc GMT 0: ${g0} giờ 00`,
-            `Chênh lệch múi giờ: ${zone >= 0 ? '+' + zone : zone} giờ`,
-            `Giờ địa phương: T = (${g0} + ${zone}) = ${localHour} giờ 00`,
-            `Kinh độ trung tâm múi giờ: ${zone * 15}° ${zone >= 0 ? 'Đông (E)' : 'Tây (W)'}`,
+            `Chu vi đáy tam giác: C_đáy = ${a} + ${b} + ${c} = ${C_day} cm`,
+            `Diện tích xung quanh: S_xq = C_đáy × h = ${C_day} × ${h} = ${S_xq} cm²`,
+            `Diện tích đáy tam giác: S_đáy ≈ ${S_day_round} cm²`,
+            `Thể tích hình lăng trụ: V = S_đáy × h ≈ ${S_day_round} × ${h} = ${V} cm³`,
           ],
         };
       },
@@ -364,7 +540,7 @@ export const QUIZZES: QuizQuestion[] = [
     question: 'Bào quan nào chỉ có ở tế bào thực vật mà KHÔNG có ở tế bào động vật?',
     options: ['Nhân tế bào và ti thể', 'Lục lạp và thành tế bào xenlulôzơ', 'Màng sinh chất và chất tế bào', 'Ti thể và không bào nhỏ'],
     correctIndex: 1,
-    explanation: 'Thành tế bào (xenlulôzơ) giúp cây cứng cáp và lục lạp chứa chất diệp lục giúp quang hợp là hai đặc trưng chỉ có ở tế bào thực vật!',
+    explanation: 'Thành tế bào (xenlulôzơ) giúp cây cứng cáp và lục lạp chứa chất diệp lục giúp quang hợp là hai đặc trưng cơ bản chỉ có ở tế bào thực vật!',
   },
   {
     id: 'bio_2',
@@ -377,10 +553,18 @@ export const QUIZZES: QuizQuestion[] = [
   {
     id: 'bio_3',
     subjectId: 'khtn_bio',
-    question: 'Bộ phận nào được coi là "bộ não" điều khiển mọi hoạt động sống của tế bào?',
-    options: ['Không bào', 'Chất tế bào', 'Nhân tế bào', 'Lục lạp'],
+    question: 'Bào quan nào được ví như "nhà máy sản xuất năng lượng" cho tế bào hoạt động?',
+    options: ['Nhân tế bào', 'Không bào', 'Ti thể (Mitochondria)', 'Bộ máy Golgi'],
     correctIndex: 2,
-    explanation: 'Nhân tế bào chứa vật chất di truyền (ADN) và điều khiển mọi hoạt động trao đổi chất, phân chia của tế bào.',
+    explanation: 'Ti thể thực hiện hô hấp tế bào, phân giải chất hữu cơ giải phóng năng lượng dưới dạng ATP cung cấp cho mọi hoạt động sống.',
+  },
+  {
+    id: 'bio_4',
+    subjectId: 'khtn_bio',
+    question: 'Khi làm tiêu bản quan sát tế bào biểu bì vảy hành tây dưới kính hiển vi, ta thường nhỏ dung dịch gì để nhuộm màu nhân tế bào?',
+    options: ['Dung dịch muối ăn NaCl', 'Dung dịch cồn 90 độ', 'Dung dịch I-ốt hoặc xanh metylen', 'Nước cất'],
+    correctIndex: 2,
+    explanation: 'Dung dịch I-ốt (hoặc xanh metylen) giúp bắt màu nhân tế bào sẫm hơn, nổi bật rõ ràng dưới kính hiển vi quang học.',
   },
 
   // Vật lý
@@ -403,10 +587,18 @@ export const QUIZZES: QuizQuestion[] = [
   {
     id: 'phy_3',
     subjectId: 'khtn_physics',
-    question: 'Lực nào dưới đây là lực TIẾP XÚC?',
-    options: ['Lực hút của Trái Đất lên quả táo rơi', 'Lực của tay đẩy cánh cửa mở ra', 'Lực hút giữa hai cực nam châm', 'Lực hút tĩnh điện'],
-    correctIndex: 1,
-    explanation: 'Tay đẩy cánh cửa là lực tiếp xúc vì có sự tiếp xúc trực tiếp giữa tay và bề mặt cánh cửa.',
+    question: 'Dùng một đòn bẩy để bẩy một tảng đá nặng. Để được lợi về lực (dùng lực nhỏ hơn), ta cần làm gì?',
+    options: ['Đặt điểm tựa gần tảng đá hơn và tay cầm xa điểm tựa hơn', 'Đặt điểm tựa thật xa tảng đá', 'Rút ngắn cánh tay đòn của tay đẩy', 'Không thể giảm lực bằng đòn bẩy'],
+    correctIndex: 0,
+    explanation: 'Theo quy tắc đòn bẩy F₁·d₁ = F₂·d₂, khi cánh tay đòn phía tác dụng lực d₂ lớn hơn nhiều so với d₁ phía vật nâng, thì lực cần tác dụng F₂ sẽ nhỏ hơn rất nhiều!',
+  },
+  {
+    id: 'phy_4',
+    subjectId: 'khtn_physics',
+    question: 'Một thỏi nhôm có thể tích 20 cm³ và khối lượng 54 g. Khối lượng riêng của nhôm là:',
+    options: ['2.7 g/cm³', '1080 g/cm³', '0.37 g/cm³', '74 g/cm³'],
+    correctIndex: 0,
+    explanation: 'Khối lượng riêng D = m / V = 54 / 20 = 2.7 g/cm³ (tương đương 2700 kg/m³).',
   },
 
   // Hóa học
@@ -421,18 +613,18 @@ export const QUIZZES: QuizQuestion[] = [
   {
     id: 'chem_2',
     subjectId: 'khtn_chem',
-    question: 'Ở thể nào các phân tử chuyển động hỗn loạn, tự do nhất và chiếm toàn bộ thể tích bình chứa?',
-    options: ['Thể rắn', 'Thể lỏng', 'Thể khí', 'Cả thể rắn và thể lỏng'],
-    correctIndex: 2,
-    explanation: 'Ở thể khí, khoảng cách giữa các phân tử rất lớn, lực liên kết rất yếu nên chúng chuyển động nhanh, hỗn loạn về mọi hướng.',
+    question: 'Công thức hóa học của phân tử khí Cacbonic (Carbon dioxide) là gì?',
+    options: ['CO', 'CO₂', 'C₂O', 'CH₄'],
+    correctIndex: 1,
+    explanation: 'Phân tử Carbon dioxide gồm 1 nguyên tử Cacbon liên kết với 2 nguyên tử Oxy: CO₂.',
   },
   {
     id: 'chem_3',
     subjectId: 'khtn_chem',
-    question: 'Nguyên tử Cacbon (C) có 6 proton và 6 neutron. Số electron của nguyên tử Cacbon là bao nhiêu?',
-    options: ['12', '0', '6', '18'],
+    question: 'Ở thể nào các phân tử chuyển động hỗn loạn, tự do nhất và chiếm toàn bộ thể tích bình chứa?',
+    options: ['Thể rắn', 'Thể lỏng', 'Thể khí', 'Cả thể rắn và thể lỏng'],
     correctIndex: 2,
-    explanation: 'Vì nguyên tử luôn trung hòa về điện nên Số electron (e) = Số proton (p) = 6.',
+    explanation: 'Ở thể khí, khoảng cách giữa các phân tử rất lớn, lực liên kết rất yếu nên chúng chuyển động nhanh, hỗn loạn về mọi hướng.',
   },
 
   // Toán học
@@ -455,35 +647,9 @@ export const QUIZZES: QuizQuestion[] = [
   {
     id: 'math_3',
     subjectId: 'math',
-    question: 'Hình hộp chữ nhật có bao nhiêu đỉnh, cạnh và mặt?',
-    options: ['6 đỉnh, 8 cạnh, 12 mặt', '8 đỉnh, 12 cạnh, 6 mặt', '12 đỉnh, 8 cạnh, 6 mặt', '8 đỉnh, 6 cạnh, 12 mặt'],
-    correctIndex: 1,
-    explanation: 'Hình hộp chữ nhật có đúng 8 đỉnh, 12 cạnh và 6 mặt chữ nhật.',
-  },
-
-  // Địa lý
-  {
-    id: 'geo_1',
-    subjectId: 'geography',
-    question: 'Trục Trái Đất nghiêng so với mặt phẳng quỹ đạo chuyển động quanh Mặt Trời một góc bằng bao nhiêu?',
-    options: ['45°', '90°', '66°33\' (nghiêng 23°27\' so với đường thẳng đứng)', '0°'],
-    correctIndex: 2,
-    explanation: 'Trục Trái Đất nghiêng 66°33\' so với mặt phẳng quỹ đạo (tức nghiêng 23°27\' hay xấp xỉ 23.5° so với phương thẳng đứng).',
-  },
-  {
-    id: 'geo_2',
-    subjectId: 'geography',
-    question: 'Khi ở Luân Đôn (Kinh tuyến 0°, GMT 0) là 6 giờ sáng thì ở Hà Nội (Việt Nam, múi giờ thứ 7, GMT+7) là mấy giờ?',
-    options: ['1 giờ sáng', '13 giờ (1 giờ chiều)', '7 giờ sáng', '23 giờ đêm'],
-    correctIndex: 1,
-    explanation: 'Hà Nội nằm ở múi giờ GMT+7, nghĩa là chạy trước Luân Đôn 7 tiếng: 6 + 7 = 13 giờ (1 giờ chiều).',
-  },
-  {
-    id: 'geo_3',
-    subjectId: 'geography',
-    question: 'Chuyển động tự quay quanh trục của Trái Đất sinh ra hệ quả chính nào?',
-    options: ['Hiện tượng 4 mùa Xuân - Hạ - Thu - Đông', 'Hiện tượng Ngày và Đêm luân phiên', 'Mưa bão trên đại dương', 'Hiện tượng nhật thực'],
-    correctIndex: 1,
-    explanation: 'Do Trái Đất hình cầu và tự quay quanh trục từ Tây sang Đông nên mọi nơi trên Trái Đất đều lần lượt được Mặt Trời chiếu sáng rồi khuất bóng, sinh ra hiện tượng ngày và đêm luân phiên!',
+    question: 'Hình lăng trụ đứng tam giác có bao nhiêu đỉnh, bao nhiêu cạnh và bao nhiêu mặt?',
+    options: ['6 đỉnh, 9 cạnh, 5 mặt', '8 đỉnh, 12 cạnh, 6 mặt', '6 đỉnh, 8 cạnh, 5 mặt', '5 đỉnh, 8 cạnh, 6 mặt'],
+    correctIndex: 0,
+    explanation: 'Hình lăng trụ đứng tam giác có đúng 6 đỉnh (3 đỉnh trên, 3 đỉnh dưới), 9 cạnh (3 cạnh đáy trên, 3 cạnh đáy dưới, 3 cạnh bên) và 5 mặt (2 đáy tam giác + 3 mặt bên chữ nhật).',
   },
 ];

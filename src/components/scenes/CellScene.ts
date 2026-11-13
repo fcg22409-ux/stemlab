@@ -20,7 +20,7 @@ export function createCellScene(
   let selectedId: string | null = null;
 
   // Contact shadow
-  const shadow = createContactShadow(3.5, 0.4);
+  const shadow = createContactShadow(3.8, 0.45);
   group.add(shadow);
 
   // Subgroup for organelles to animate
@@ -29,7 +29,6 @@ export function createCellScene(
   group.add(plantGroup);
   group.add(animalGroup);
 
-  // Storage for parts to animate exploded view
   interface OrganellePart {
     mesh: THREE.Object3D;
     basePos: THREE.Vector3;
@@ -40,27 +39,27 @@ export function createCellScene(
   const parts: OrganellePart[] = [];
   const interactiveObjects: THREE.Object3D[] = [];
 
-  // Reusable materials
+  // Reusable PBR materials
   const plantWallMat = new THREE.MeshStandardMaterial({
     color: 0x10b981,
-    roughness: 0.4,
+    roughness: 0.35,
     metalness: 0.1,
     transparent: true,
     opacity: 0.85,
   });
   const membraneMat = new THREE.MeshStandardMaterial({
     color: 0x38bdf8,
-    roughness: 0.3,
-    metalness: 0.1,
+    roughness: 0.25,
+    metalness: 0.15,
     transparent: true,
-    opacity: 0.65,
+    opacity: 0.7,
   });
   const cytoplasmMat = new THREE.MeshStandardMaterial({
     color: 0xc4b5fd,
-    roughness: 0.5,
+    roughness: 0.45,
     metalness: 0.05,
     transparent: true,
-    opacity: 0.35,
+    opacity: 0.3,
   });
   const nucleusMat = new THREE.MeshStandardMaterial({
     color: 0xf43f5e,
@@ -72,9 +71,14 @@ export function createCellScene(
     roughness: 0.2,
     metalness: 0.3,
   });
-  const chloroplastMat = new THREE.MeshStandardMaterial({
-    color: 0x22c55e,
+  const chloroplastOuterMat = new THREE.MeshStandardMaterial({
+    color: 0x15803d,
     roughness: 0.3,
+    metalness: 0.1,
+  });
+  const thylakoidMat = new THREE.MeshStandardMaterial({
+    color: 0x4ade80,
+    roughness: 0.2,
     metalness: 0.1,
   });
   const mitochondriaMat = new THREE.MeshStandardMaterial({
@@ -87,7 +91,17 @@ export function createCellScene(
     roughness: 0.1,
     metalness: 0.1,
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.65,
+  });
+  const golgiMat = new THREE.MeshStandardMaterial({
+    color: 0xeab308,
+    roughness: 0.3,
+    metalness: 0.2,
+  });
+  const erMat = new THREE.MeshStandardMaterial({
+    color: 0xa855f7,
+    roughness: 0.4,
+    metalness: 0.1,
   });
 
   // Highlight material
@@ -96,10 +110,9 @@ export function createCellScene(
     roughness: 0.2,
     metalness: 0.5,
     emissive: 0xca8a04,
-    emissiveIntensity: 0.5,
+    emissiveIntensity: 0.6,
   });
 
-  // Helper to register parts
   const registerPart = (
     mesh: THREE.Object3D,
     dir: THREE.Vector3,
@@ -117,31 +130,88 @@ export function createCellScene(
     parent.add(mesh);
   };
 
-  // 1. PLANT CELL BUILD
-  // Hexagonal/rounded rectangular cutaway cell wall
-  const plantWallGeo = new THREE.CylinderGeometry(2.4, 2.4, 1.4, 6, 1, false, 0, Math.PI * 1.5);
+  // Helper to build detailed Chloroplast with inner thylakoid grana stacks
+  const createDetailedChloroplast = () => {
+    const chGroup = new THREE.Group();
+    const chGeo = new THREE.SphereGeometry(0.3, 16, 16);
+    chGeo.scale(1.4, 0.6, 0.8);
+    const outer = new THREE.Mesh(chGeo, chloroplastOuterMat);
+    chGroup.add(outer);
+
+    // Inner thylakoid stacks (3 tiny stacks of green disks)
+    for (let s = -1; s <= 1; s++) {
+      for (let d = 0; d < 3; d++) {
+        const discGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.02, 12);
+        const disc = new THREE.Mesh(discGeo, thylakoidMat);
+        disc.position.set(s * 0.18, -0.04 + d * 0.03, 0.04);
+        chGroup.add(disc);
+      }
+    }
+    return chGroup;
+  };
+
+  // Helper to build Golgi Apparatus (curved flattened cisternae sacs)
+  const createGolgi = () => {
+    const gGroup = new THREE.Group();
+    for (let i = 0; i < 4; i++) {
+      const curveGeo = new THREE.TorusGeometry(0.35 + i * 0.08, 0.035, 12, 24, Math.PI * 0.7);
+      const mesh = new THREE.Mesh(curveGeo, golgiMat);
+      mesh.rotation.z = Math.PI * 0.65;
+      mesh.position.set(0, 0, i * 0.08);
+      gGroup.add(mesh);
+    }
+    // Small secretory vesicles budding off
+    const vGeo = new THREE.SphereGeometry(0.04, 8, 8);
+    for (let v = 0; v < 5; v++) {
+      const vMesh = new THREE.Mesh(vGeo, golgiMat);
+      vMesh.position.set(
+        (Math.random() - 0.5) * 0.5,
+        (Math.random() - 0.5) * 0.4,
+        0.35 + Math.random() * 0.15
+      );
+      gGroup.add(vMesh);
+    }
+    return gGroup;
+  };
+
+  // Helper to build Endoplasmic Reticulum (convoluted folded tubular network around nucleus)
+  const createER = () => {
+    const erGroup = new THREE.Group();
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * Math.PI * 1.5;
+      const torus = new THREE.TorusGeometry(0.85 + (i % 2) * 0.15, 0.04, 8, 24, Math.PI * 0.4);
+      const mesh = new THREE.Mesh(torus, erMat);
+      mesh.rotation.set(0.3 * i, angle, 0.2 * i);
+      erGroup.add(mesh);
+    }
+    return erGroup;
+  };
+
+  // 1. PLANT CELL ASSEMBLY
+  // Cell wall cutaway
+  const plantWallGeo = new THREE.CylinderGeometry(2.5, 2.5, 1.4, 6, 1, false, 0, Math.PI * 1.55);
   const plantWall = new THREE.Mesh(plantWallGeo, plantWallMat);
   plantWall.position.set(0, 0.7, 0);
   registerPart(plantWall, new THREE.Vector3(0, 0, 1.5), 'cell_wall', plantGroup);
 
-  // Plant Membrane
-  const plantMemGeo = new THREE.CylinderGeometry(2.25, 2.25, 1.35, 6, 1, false, 0, Math.PI * 1.5);
+  // Cell Membrane
+  const plantMemGeo = new THREE.CylinderGeometry(2.35, 2.35, 1.35, 6, 1, false, 0, Math.PI * 1.55);
   const plantMem = new THREE.Mesh(plantMemGeo, membraneMat);
   plantMem.position.set(0, 0.7, 0);
   registerPart(plantMem, new THREE.Vector3(0, 0, 1.2), 'membrane', plantGroup);
 
-  // Cytoplasm base
-  const plantCytoGeo = new THREE.CylinderGeometry(2.1, 2.1, 1.2, 6, 1, false, 0, Math.PI * 1.5);
+  // Cytoplasm
+  const plantCytoGeo = new THREE.CylinderGeometry(2.2, 2.2, 1.2, 6, 1, false, 0, Math.PI * 1.55);
   const plantCyto = new THREE.Mesh(plantCytoGeo, cytoplasmMat);
   plantCyto.position.set(0, 0.7, 0);
   registerPart(plantCyto, new THREE.Vector3(0, -0.5, 0), 'cytoplasm', plantGroup);
 
-  // Big Central Vacuole (Unique to Plant)
-  const vacuoleGeo = new THREE.SphereGeometry(1.0, 24, 24);
-  vacuoleGeo.scale(1.2, 0.7, 0.9);
+  // Central Vacuole
+  const vacuoleGeo = new THREE.SphereGeometry(1.05, 24, 24);
+  vacuoleGeo.scale(1.2, 0.65, 0.9);
   const plantVacuole = new THREE.Mesh(vacuoleGeo, vacuoleMat);
-  plantVacuole.position.set(-0.5, 0.7, -0.4);
-  registerPart(plantVacuole, new THREE.Vector3(-1.2, 0.8, -1), 'vacuole', plantGroup);
+  plantVacuole.position.set(-0.55, 0.7, -0.4);
+  registerPart(plantVacuole, new THREE.Vector3(-1.3, 0.8, -1), 'vacuole', plantGroup);
 
   // Nucleus & Nucleolus
   const nucleusGroup = new THREE.Group();
@@ -155,19 +225,25 @@ export function createCellScene(
   nucleusGroup.position.set(0.9, 0.8, -0.3);
   registerPart(nucleusGroup, new THREE.Vector3(1.5, 1.2, -0.5), 'nucleus', plantGroup);
 
-  // Chloroplasts (Plant cell green powerhouses)
+  // ER hugging Nucleus
+  const plantER = createER();
+  plantER.position.copy(nucleusGroup.position);
+  registerPart(plantER, new THREE.Vector3(1.3, 1.2, -0.4), 'er', plantGroup);
+
+  // Golgi Apparatus
+  const plantGolgi = createGolgi();
+  plantGolgi.position.set(0.7, 0.65, 0.8);
+  registerPart(plantGolgi, new THREE.Vector3(1.2, 0.6, 1.3), 'golgi', plantGroup);
+
+  // Chloroplasts (4 items around periphery)
   for (let i = 0; i < 4; i++) {
     const angle = (i / 4) * Math.PI * 1.4 + 0.3;
-    const chlGroup = new THREE.Group();
-    const chlGeo = new THREE.SphereGeometry(0.28, 16, 16);
-    chlGeo.scale(1.5, 0.6, 0.8);
-    const chlMesh = new THREE.Mesh(chlGeo, chloroplastMat);
-    chlGroup.add(chlMesh);
-    const cx = Math.cos(angle) * 1.4;
-    const cz = Math.sin(angle) * 1.1;
-    chlGroup.position.set(cx, 0.6, cz);
-    chlGroup.rotation.y = angle;
-    registerPart(chlGroup, new THREE.Vector3(cx * 1.5, 0.6, cz * 1.5), 'chloroplast', plantGroup);
+    const chl = createDetailedChloroplast();
+    const cx = Math.cos(angle) * 1.45;
+    const cz = Math.sin(angle) * 1.15;
+    chl.position.set(cx, 0.65, cz);
+    chl.rotation.y = angle;
+    registerPart(chl, new THREE.Vector3(cx * 1.5, 0.6, cz * 1.5), 'chloroplast', plantGroup);
   }
 
   // Mitochondria (2 items)
@@ -183,20 +259,24 @@ export function createCellScene(
     registerPart(mitGroup, new THREE.Vector3(mx * 1.4, 0.8, mz * 1.4), 'mitochondria', plantGroup);
   }
 
-  // Add 3D Label Sprites
-  const nucLabel = createTextSprite('Nhân tế bào', 'rgba(225, 29, 72, 0.85)', '#ffffff', 26);
+  // 3D Label Sprites for Plant
+  const nucLabel = createTextSprite('Nhân tế bào (ADN)', 'rgba(225, 29, 72, 0.85)', '#ffffff', 22);
   nucLabel.position.set(0.9, 1.6, -0.3);
   plantGroup.add(nucLabel);
 
-  const wallLabel = createTextSprite('Thành tế bào (Xenlulôzơ)', 'rgba(5, 150, 105, 0.85)', '#ffffff', 24);
+  const wallLabel = createTextSprite('Thành xenlulôzơ', 'rgba(5, 150, 105, 0.85)', '#ffffff', 22);
   wallLabel.position.set(0, 1.8, 1.5);
   plantGroup.add(wallLabel);
 
-  const chlLabel = createTextSprite('Lục lạp (Quang hợp)', 'rgba(22, 163, 74, 0.85)', '#ffffff', 24);
+  const chlLabel = createTextSprite('Lục lạp (Quang hợp)', 'rgba(22, 163, 74, 0.85)', '#ffffff', 22);
   chlLabel.position.set(1.4, 1.4, 0.9);
   plantGroup.add(chlLabel);
 
-  // 2. ANIMAL CELL BUILD (Rounder, No cell wall, No chloroplasts, small vacuoles)
+  const vacLabel = createTextSprite('Không bào lớn (Nước)', 'rgba(8, 145, 178, 0.85)', '#ffffff', 22);
+  vacLabel.position.set(-0.6, 1.5, -0.4);
+  plantGroup.add(vacLabel);
+
+  // 2. ANIMAL CELL ASSEMBLY (Spherical, No wall, No chloroplasts, Golgi, Mitochondria, ER)
   const animMemGeo = new THREE.SphereGeometry(2.1, 32, 32, 0, Math.PI * 1.5, 0, Math.PI);
   const animMem = new THREE.Mesh(animMemGeo, membraneMat);
   animMem.position.set(0, 1.0, 0);
@@ -216,6 +296,14 @@ export function createCellScene(
   animNucGroup.position.set(0, 1.0, 0);
   registerPart(animNucGroup, new THREE.Vector3(0, 1.5, 0), 'nucleus', animalGroup);
 
+  const animER = createER();
+  animER.position.set(0, 1.0, 0);
+  registerPart(animER, new THREE.Vector3(0, 1.3, 0.3), 'er', animalGroup);
+
+  const animGolgi = createGolgi();
+  animGolgi.position.set(-0.8, 0.9, 0.6);
+  registerPart(animGolgi, new THREE.Vector3(-1.2, 0.9, 0.9), 'golgi', animalGroup);
+
   for (let i = 0; i < 4; i++) {
     const angle = (i / 4) * Math.PI * 1.5;
     const mitGroup = new THREE.Group();
@@ -229,12 +317,10 @@ export function createCellScene(
     registerPart(mitGroup, new THREE.Vector3(mx * 1.5, 0.8, mz * 1.5), 'mitochondria', animalGroup);
   }
 
-  // Animal cell label
-  const animMemLabel = createTextSprite('Màng sinh chất mềm', 'rgba(2, 132, 199, 0.85)', '#ffffff', 24);
+  const animMemLabel = createTextSprite('Màng sinh chất mềm', 'rgba(2, 132, 199, 0.85)', '#ffffff', 22);
   animMemLabel.position.set(0, 2.4, 0);
   animalGroup.add(animMemLabel);
 
-  // Default to plant cell visible
   animalGroup.visible = false;
   plantGroup.visible = true;
 
@@ -271,7 +357,6 @@ export function createCellScene(
     },
     getInteractiveObjects: () => interactiveObjects,
     update: (delta: number) => {
-      // Gentle floating animation
       group.rotation.y += delta * 0.15;
     },
     dispose: () => {

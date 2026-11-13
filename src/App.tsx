@@ -10,6 +10,8 @@ import { HeaderNav } from './components/HeaderNav';
 import { BottomControlDock } from './components/BottomControlDock';
 import { FormulaPanel } from './components/FormulaPanel';
 import { QuizModal } from './components/QuizModal';
+import { MicroscopeModal } from './components/MicroscopeModal';
+import { LabNotebookModal } from './components/LabNotebookModal';
 import { soundFx } from './utils/audio';
 
 export default function App() {
@@ -19,6 +21,8 @@ export default function App() {
   // Modals state
   const [isFormulaOpen, setIsFormulaOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isMicroscopeOpen, setIsMicroscopeOpen] = useState(false);
+  const [isLabNotebookOpen, setIsLabNotebookOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
   // Controls Ref for imperatively controlling active 3D scenes
@@ -38,7 +42,6 @@ export default function App() {
   // Keyboard shortcuts for convenience
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if typing in an input
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
 
       if (e.key === 'r' || e.key === 'R') {
@@ -49,6 +52,12 @@ export default function App() {
         soundFx.playClick();
       } else if (e.key === 'q' || e.key === 'Q') {
         setIsQuizOpen((prev) => !prev);
+        soundFx.playClick();
+      } else if (e.key === 'm' || e.key === 'M') {
+        setIsMicroscopeOpen((prev) => !prev);
+        soundFx.playClick();
+      } else if (e.key === 'n' || e.key === 'N') {
+        setIsLabNotebookOpen((prev) => !prev);
         soundFx.playClick();
       }
     };
@@ -71,6 +80,8 @@ export default function App() {
         onSelectSubject={handleSelectSubject}
         onOpenFormula={() => setIsFormulaOpen(true)}
         onOpenQuiz={() => setIsQuizOpen(true)}
+        onOpenMicroscope={() => setIsMicroscopeOpen(true)}
+        onOpenLabNotebook={() => setIsLabNotebookOpen(true)}
         isMuted={isMuted}
         onToggleMute={handleToggleMute}
       />
@@ -81,6 +92,8 @@ export default function App() {
         controlsRef={controlsRef}
         selectedOrganelleId={selectedOrganelleId}
         onSelectOrganelle={(id) => setSelectedOrganelleId(id)}
+        onOpenMicroscope={() => setIsMicroscopeOpen(true)}
+        onOpenLabNotebook={() => setIsLabNotebookOpen(true)}
       />
 
       {/* Interactive Formula & Calculator Modal */}
@@ -96,6 +109,18 @@ export default function App() {
         isOpen={isQuizOpen}
         onClose={() => setIsQuizOpen(false)}
         currentSubject={currentSubject}
+      />
+
+      {/* Virtual Optical Microscope Modal */}
+      <MicroscopeModal
+        isOpen={isMicroscopeOpen}
+        onClose={() => setIsMicroscopeOpen(false)}
+      />
+
+      {/* Laboratory Notebook & Chart Modal */}
+      <LabNotebookModal
+        isOpen={isLabNotebookOpen}
+        onClose={() => setIsLabNotebookOpen(false)}
       />
     </div>
   );

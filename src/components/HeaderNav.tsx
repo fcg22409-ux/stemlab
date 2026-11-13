@@ -1,7 +1,7 @@
 import React from 'react';
 import { SubjectId } from '../types';
 import { SUBJECTS } from '../data/curriculumData';
-import { Dna, Weight, Atom, Box, Globe, Calculator, HelpCircle, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { Dna, Weight, Atom, Box, Calculator, HelpCircle, Volume2, VolumeX, Sparkles } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
 interface HeaderNavProps {
@@ -9,6 +9,8 @@ interface HeaderNavProps {
   onSelectSubject: (id: SubjectId) => void;
   onOpenFormula: () => void;
   onOpenQuiz: () => void;
+  onOpenMicroscope?: () => void;
+  onOpenLabNotebook?: () => void;
   isMuted: boolean;
   onToggleMute: () => void;
 }
@@ -18,7 +20,6 @@ const ICONS: Record<string, React.ReactNode> = {
   Weight: <Weight className="w-4 h-4" />,
   Atom: <Atom className="w-4 h-4" />,
   Box: <Box className="w-4 h-4" />,
-  Globe: <Globe className="w-4 h-4" />,
 };
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -26,6 +27,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onSelectSubject,
   onOpenFormula,
   onOpenQuiz,
+  onOpenMicroscope,
+  onOpenLabNotebook,
   isMuted,
   onToggleMute,
 }) => {
@@ -82,6 +85,34 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 pointer-events-auto">
+          {currentSubject === 'khtn_bio' && (
+            <button
+              onClick={() => {
+                soundFx.playClick();
+                onOpenMicroscope?.();
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600/90 hover:bg-emerald-600 text-white border border-emerald-400/30 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+              title="Mở Kính hiển vi quang học ảo"
+            >
+              <Sparkles className="w-4 h-4 text-emerald-200" />
+              <span className="hidden sm:inline">Kính hiển vi</span>
+            </button>
+          )}
+
+          {currentSubject === 'khtn_physics' && (
+            <button
+              onClick={() => {
+                soundFx.playClick();
+                onOpenLabNotebook?.();
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-blue-600/90 hover:bg-blue-600 text-white border border-blue-400/30 shadow-lg shadow-blue-600/20 transition-all cursor-pointer"
+              title="Mở Sổ tay thực nghiệm & đồ thị"
+            >
+              <Sparkles className="w-4 h-4 text-blue-200" />
+              <span className="hidden sm:inline">Sổ tay thí nghiệm</span>
+            </button>
+          )}
+
           <button
             onClick={() => {
               soundFx.playClick();
@@ -99,10 +130,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               soundFx.playClick();
               onOpenQuiz();
             }}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600/90 hover:bg-emerald-600 text-white border border-emerald-400/30 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-600/90 hover:bg-amber-600 text-white border border-amber-400/30 shadow-lg shadow-amber-600/20 transition-all cursor-pointer"
             title="Thử tài trắc nghiệm nhanh"
           >
-            <HelpCircle className="w-4 h-4 text-emerald-200" />
+            <HelpCircle className="w-4 h-4 text-amber-200" />
             <span className="hidden sm:inline">Trắc nghiệm</span>
           </button>
 

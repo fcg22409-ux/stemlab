@@ -1,6 +1,6 @@
 {
   "name": "Mô Hình 3D Học Tập Lớp 6 - Khoa Học & Toán Học",
-  "description": "Mô hình 3D tương tác mô phỏng kiến thức và công thức các môn học lớp 6: KHTN (Sinh học, Hóa học, Vật lý), Toán học hình không gian, và Địa lý Trái Đất.",
+  "description": "Mô hình 3D tương tác mô phỏng kiến thức và công thức 4 môn học trọng tâm lớp 6: KHTN Sinh học (Tế bào & Kính hiển vi), Vật lý (Lực đàn hồi & Đòn bẩy), Hóa học (Nguyên tử Bohr & Phân tử 3D), và Toán học (Hình học không gian & Khai triển hình).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
